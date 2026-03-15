@@ -527,40 +527,6 @@
     </div>
   </div>
 
-  <div class="objects-grid">
-    <div class="obj-card">
-      <div class="obj-canvas-wrap" id="wrap-0"></div>
-      <div class="obj-info">
-        <div class="obj-title">ERG Chamber — Main Body</div>
-        <div class="obj-desc">Custom-designed electroretinography (ERG) recording chamber for ex vivo retinal physiological measurements. Optimized for electrode positioning and light-tight sealing.</div>
-        <span class="obj-tag">Fusion 360 · FDM 3D Print</span>
-      </div>
-    </div>
-    <div class="obj-card">
-      <div class="obj-canvas-wrap" id="wrap-1"></div>
-      <div class="obj-info">
-        <div class="obj-title">ERG Chamber — Support Frame</div>
-        <div class="obj-desc">Modular structural frame for mounting and aligning the ERG chamber assembly on the electrophysiology rig. Designed for repeatable positioning.</div>
-        <span class="obj-tag">Fusion 360 · FDM 3D Print</span>
-      </div>
-    </div>
-    <div class="obj-card">
-      <div class="obj-canvas-wrap" id="wrap-2"></div>
-      <div class="obj-info">
-        <div class="obj-title">Retinal Dissection Stand</div>
-        <div class="obj-desc">Ergonomic stand for holding the dissection dish at an optimal angle during mouse retinal isolation. Reduces hand fatigue and improves tissue preservation.</div>
-        <span class="obj-tag">Fusion 360 · FDM 3D Print</span>
-      </div>
-    </div>
-    <div class="obj-card">
-      <div class="obj-canvas-wrap" id="wrap-3"></div>
-      <div class="obj-info">
-        <div class="obj-title">Injection Needle Guide</div>
-        <div class="obj-desc">Precision guide for consistent subretinal injection angles in neonatal mouse models. Manufactured with tolerances under 0.2 mm for reproducible in vivo experiments.</div>
-        <span class="obj-tag">Fusion 360 · FDM 3D Print</span>
-      </div>
-    </div>
-  </div>
 </section>
 
 <!-- CONTACT -->
@@ -860,8 +826,6 @@ function makeObjScene(wrapId, defFn) {
   }).observe(wrap);
 }
 
-// Init all 4 cards
-for (let i = 0; i < 4; i++) makeObjScene('wrap-' + i, objDefs[i]);
 
 // ═══════════════════════════════════════
 //  REAL STL MODEL LOADER (reusable)
