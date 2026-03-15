@@ -473,11 +473,18 @@
   <div class="section-title">Designed objects.</div>
   <p class="section-desc">Interactive 3D models — drag to rotate. Designed using Autodesk Fusion 360 and fabricated via FDM 3D printing, primarily for custom scientific instrumentation in the lab.</p>
 
-  <!-- FEATURED REAL MODEL -->
+  <!-- FEATURED REAL MODELS -->
+  <style>
+    @media (max-width: 700px) {
+      .featured-model-grid { grid-template-columns: 1fr !important; }
+      .featured-model-wrap { height: 260px !important; }
+    }
+  </style>
+
   <div class="obj-card" style="margin-bottom:1.5rem">
     <div style="display:grid;grid-template-columns:1fr 340px;gap:0" class="featured-model-grid">
-      <div id="wrap-real" style="height:380px;cursor:grab;position:relative;">
-        <div id="stl-loading" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.75rem;color:var(--muted);font-size:.9rem;pointer-events:none">
+      <div id="wrap-real" class="featured-model-wrap" style="height:380px;cursor:grab;position:relative;">
+        <div id="stl-loading-top" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.75rem;color:var(--muted);font-size:.9rem;pointer-events:none">
           <i class="fa fa-spinner fa-spin" style="font-size:1.5rem;color:var(--blue)"></i>
           Loading model…
         </div>
@@ -497,12 +504,28 @@
     </div>
   </div>
 
-  <style>
-    @media (max-width: 700px) {
-      .featured-model-grid { grid-template-columns: 1fr !important; }
-      #wrap-real { height: 260px !important; }
-    }
-  </style>
+  <div class="obj-card" style="margin-bottom:1.5rem">
+    <div style="display:grid;grid-template-columns:340px 1fr;gap:0" class="featured-model-grid">
+      <div class="obj-info" style="display:flex;flex-direction:column;justify-content:center;padding:2rem">
+        <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:.6rem">Featured Design</div>
+        <div class="obj-title" style="font-size:1.3rem;margin-bottom:.75rem">CNC Bottom Chamber</div>
+        <div class="obj-desc" style="font-size:.9rem;line-height:1.7">
+          Complementary bottom chamber component of the ERG recording assembly. Designed to mate precisely with the top chamber, housing the perfusion inlet/outlet ports and electrode base for stable retinal mounting during electrophysiological recordings.
+        </div>
+        <div style="margin-top:1.25rem;display:flex;gap:.6rem;flex-wrap:wrap">
+          <span class="obj-tag">Autodesk Fusion 360</span>
+          <span class="obj-tag">CNC Machined</span>
+          <span class="obj-tag">Lab Instrument</span>
+        </div>
+      </div>
+      <div id="wrap-real-bottom" class="featured-model-wrap" style="height:380px;cursor:grab;position:relative;">
+        <div id="stl-loading-bottom" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.75rem;color:var(--muted);font-size:.9rem;pointer-events:none">
+          <i class="fa fa-spinner fa-spin" style="font-size:1.5rem;color:var(--blue)"></i>
+          Loading model…
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="objects-grid">
     <div class="obj-card">
@@ -841,10 +864,10 @@ function makeObjScene(wrapId, defFn) {
 for (let i = 0; i < 4; i++) makeObjScene('wrap-' + i, objDefs[i]);
 
 // ═══════════════════════════════════════
-//  REAL STL MODEL — CNC Top Chamber
+//  REAL STL MODEL LOADER (reusable)
 // ═══════════════════════════════════════
-(function() {
-  const wrap = document.getElementById('wrap-real');
+function loadSTL(wrapId, loadingId, filename) {
+  const wrap = document.getElementById(wrapId);
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(wrap.clientWidth, wrap.clientHeight);
@@ -854,7 +877,6 @@ for (let i = 0; i < 4; i++) makeObjScene('wrap-' + i, objDefs[i]);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(40, wrap.clientWidth / wrap.clientHeight, 0.01, 1000);
 
-  // Lights
   scene.add(new THREE.AmbientLight(0xffffff, 0.5));
   const d1 = new THREE.DirectionalLight(0x00d4ff, 1.2); d1.position.set(5, 10, 8); scene.add(d1);
   const d2 = new THREE.DirectionalLight(0x7c3aed, 0.7); d2.position.set(-8, -4, -6); scene.add(d2);
@@ -862,32 +884,23 @@ for (let i = 0; i < 4; i++) makeObjScene('wrap-' + i, objDefs[i]);
 
   const loader = new THREE.STLLoader();
   loader.load(
-    'CNC_top chamber.stl',
+    filename,
     function(geometry) {
-      document.getElementById('stl-loading').style.display = 'none';
-
+      document.getElementById(loadingId).style.display = 'none';
       geometry.computeVertexNormals();
       geometry.center();
 
-      const mat = new THREE.MeshStandardMaterial({
-        color: 0x94a3b8,
-        metalness: 0.75,
-        roughness: 0.25,
-      });
+      const mat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.75, roughness: 0.25 });
       const mesh = new THREE.Mesh(geometry, mat);
 
-      // Auto-fit camera to model size
       geometry.computeBoundingBox();
-      const box = geometry.boundingBox;
       const size = new THREE.Vector3();
-      box.getSize(size);
+      geometry.boundingBox.getSize(size);
       const maxDim = Math.max(size.x, size.y, size.z);
       camera.position.set(0, maxDim * 0.4, maxDim * 1.8);
       camera.lookAt(0, 0, 0);
-
       scene.add(mesh);
 
-      // Drag to rotate
       let isDragging = false, prevX = 0, prevY = 0, rotX = 0, rotY = 0, velX = 0, velY = 0;
       const el = renderer.domElement;
       el.addEventListener('mousedown', e => { isDragging = true; prevX = e.clientX; prevY = e.clientY; velX = velY = 0; e.preventDefault(); });
@@ -906,12 +919,7 @@ for (let i = 0; i < 4; i++) makeObjScene('wrap-' + i, objDefs[i]);
         rotY += velX * 0.008; rotX += velY * 0.008;
         prevX = e.touches[0].clientX; prevY = e.touches[0].clientY;
       }, {passive:true});
-
-      // Scroll to zoom
-      el.addEventListener('wheel', e => {
-        camera.position.multiplyScalar(1 + e.deltaY * 0.001);
-        e.preventDefault();
-      }, {passive:false});
+      el.addEventListener('wheel', e => { camera.position.multiplyScalar(1 + e.deltaY * 0.001); e.preventDefault(); }, {passive:false});
 
       let t = 0;
       function animate() {
@@ -925,12 +933,12 @@ for (let i = 0; i < 4; i++) makeObjScene('wrap-' + i, objDefs[i]);
       animate();
     },
     function(xhr) {
-      const pct = Math.round(xhr.loaded / xhr.total * 100);
-      const el = document.getElementById('stl-loading');
+      const pct = xhr.total ? Math.round(xhr.loaded / xhr.total * 100) : '...';
+      const el = document.getElementById(loadingId);
       if (el) el.innerHTML = `<i class="fa fa-spinner fa-spin" style="font-size:1.5rem;color:var(--blue)"></i>Loading… ${pct}%`;
     },
-    function(err) {
-      const el = document.getElementById('stl-loading');
+    function() {
+      const el = document.getElementById(loadingId);
       if (el) el.innerHTML = '<i class="fa fa-exclamation-triangle" style="color:#f87171"></i> Could not load model. Open via a local server.';
     }
   );
@@ -940,7 +948,10 @@ for (let i = 0; i < 4; i++) makeObjScene('wrap-' + i, objDefs[i]);
     camera.aspect = wrap.clientWidth / wrap.clientHeight;
     camera.updateProjectionMatrix();
   }).observe(wrap);
-})();
+}
+
+loadSTL('wrap-real',        'stl-loading-top',    'CNC_top chamber.stl');
+loadSTL('wrap-real-bottom', 'stl-loading-bottom', 'CNC_bottom chamber.stl');
 
 // ═══════════════════════════════════════
 //  CONTACT FORM
