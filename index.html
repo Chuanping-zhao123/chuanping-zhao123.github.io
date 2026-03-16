@@ -278,7 +278,6 @@
     <p class="hero-subtitle">Neuroscientist · Genome Engineer · 3D Designer developing next-generation CRISPR tools and custom scientific instruments at The Scripps Research Institute.</p>
     <div class="hero-ctas">
       <a href="#showcase" class="btn btn-primary">View 3D Designs</a>
-      <a href="CV_Chuanping Zhao.pdf" class="btn btn-outline" target="_blank">Download CV</a>
     </div>
   </div>
   <div class="scroll-hint"><i class="fa fa-chevron-down"></i><span>scroll</span></div>
@@ -314,7 +313,7 @@
         </div>
         <div class="info-item">
           <div class="info-icon"><i class="fa fa-envelope"></i></div>
-          <div class="info-text"><strong>Email</strong>czhao@scripps.edu</div>
+          <div class="info-text"><strong>Email</strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d7b4adbfb6b897a4b4a5bea7a7a4f9b2b3a2">[email&#160;protected]</a></div>
         </div>
         <div class="info-item">
           <div class="info-icon"><i class="fa fa-phone"></i></div>
@@ -533,21 +532,11 @@
 <section id="contact">
   <div class="section-label">Get In Touch</div>
   <div class="section-title">Let's connect.</div>
-  <div class="contact-grid">
-    <form class="contact-form" onsubmit="handleSubmit(event)">
-      <div class="form-row">
-        <div class="form-group"><label>First Name</label><input type="text" placeholder="Jane" /></div>
-        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Smith" /></div>
-      </div>
-      <div class="form-group"><label>Email</label><input type="email" placeholder="you@example.com" /></div>
-      <div class="form-group"><label>Subject</label><input type="text" placeholder="Collaboration inquiry..." /></div>
-      <div class="form-group"><label>Message</label><textarea rows="5" placeholder="Tell me about your research or project..."></textarea></div>
-      <button type="submit" class="btn btn-primary">Send Message <i class="fa fa-paper-plane" style="margin-left:.5rem"></i></button>
-    </form>
-    <div class="contact-info">
+  <div>
+    <div class="contact-info" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem">
       <div class="contact-item">
         <div class="contact-icon"><i class="fa fa-envelope"></i></div>
-        <div><div class="contact-label">Email</div><div class="contact-value">czhao@scripps.edu</div></div>
+        <div><div class="contact-label">Email</div><div class="contact-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c9aab3a1a8a689baaabba0b9b9bae7acadbc">[email&#160;protected]</a></div></div>
       </div>
       <div class="contact-item">
         <div class="contact-icon"><i class="fa fa-phone"></i></div>
@@ -570,7 +559,7 @@
   <p>© 2026 <span>Chuanping Zhao</span>. The Scripps Research Institute, Jupiter, FL.</p>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
 <script>
 // ═══════════════════════════════════════
@@ -920,16 +909,4 @@ loadSTL('wrap-real-bottom', 'stl-loading-bottom', 'CNC_bottom chamber.stl');
 // ═══════════════════════════════════════
 //  CONTACT FORM
 // ═══════════════════════════════════════
-function handleSubmit(e) {
-  e.preventDefault();
-  const btn = e.target.querySelector('button[type=submit]');
-  btn.textContent = '✓ Message Sent!';
-  btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-  setTimeout(() => {
-    btn.textContent = 'Send Message ✈';
-    btn.style.background = '';
-  }, 3000);
-}
-</script>
-</body>
-</html>
+function handleSubmi
