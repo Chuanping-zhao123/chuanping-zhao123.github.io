@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Genome Engineering — An Overview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #090e1a;
+      --bg2:      #0d1527;
+      --card:     rgba(255,255,255,0.04);
+      --border:   rgba(255,255,255,0.08);
+      --blue:     #00d4ff;
+      --purple:   #7c3aed;
+      --green:    #10b981;
+      --orange:   #f59e0b;
+      --red:      #ef4444;
+      --gradient: linear-gradient(135deg, #00d4ff, #7c3aed);
+      --text:     #e2e8f0;
+      --muted:    #64748b;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 1000;
+      backdrop-filter: blur(20px);
+      background: rgba(9,14,26,.7);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-weight: 700; font-size: 1.2rem;
+      background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: .9rem; font-weight: 500;
+      transition: color .3s;
+    }
+    .nav-links a:hover { color: var(--blue); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 80px 5% 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,212,255,.12) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 50% at 80% 80%, rgba(124,58,237,.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .dna-bg {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden; opacity: .07;
+    }
+    .dna-bg svg { width: 100%; height: 100%; }
+
+    .hero-content { position: relative; z-index: 1; max-width: 800px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(0,212,255,.1); border: 1px solid rgba(0,212,255,.3);
+      border-radius: 999px; padding: .35rem 1rem; font-size: .8rem;
+      color: var(--blue); margin-bottom: 2rem; font-weight: 500;
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900; line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 span {
+      background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.15rem; color: var(--muted); line-height: 1.8;
+      max-width: 640px; margin: 0 auto 2.5rem;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: .6rem;
+      background: var(--gradient); color: #fff;
+      padding: .85rem 2rem; border-radius: 999px;
+      font-weight: 600; text-decoration: none; font-size: .95rem;
+      transition: opacity .3s, transform .2s;
+    }
+    .hero-cta:hover { opacity: .85; transform: translateY(-2px); }
+
+    /* ── SECTIONS ── */
+    section { padding: 80px 5%; }
+    .section-label {
+      font-size: .75rem; font-weight: 700; letter-spacing: .15em;
+      color: var(--blue); text-transform: uppercase; margin-bottom: .75rem;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 800; line-height: 1.2; margin-bottom: 1rem;
+    }
+    .section-title span {
+      background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .section-sub {
+      color: var(--muted); font-size: 1rem; line-height: 1.7;
+      max-width: 640px; margin-bottom: 3rem;
+    }
+
+    /* ── WHAT IS ── */
+    .what-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2rem; align-items: start;
+    }
+    @media(max-width:768px){ .what-grid { grid-template-columns: 1fr; } }
+    .what-text p { color: var(--muted); line-height: 1.8; margin-bottom: 1rem; }
+    .what-text p strong { color: var(--text); }
+    .dna-diagram {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 1.5rem; padding: 2rem;
+      display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
+    }
+    .dna-diagram h3 { font-size: 1rem; color: var(--muted); text-align: center; }
+    .dna-strand {
+      display: flex; flex-direction: column; gap: .4rem; width: 100%;
+      max-width: 260px;
+    }
+    .base-pair {
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+    }
+    .base {
+      width: 36px; height: 36px; border-radius: .5rem;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .85rem; color: #fff;
+    }
+    .base.A { background: #10b981; }
+    .base.T { background: #3b82f6; }
+    .base.G { background: #f59e0b; }
+    .base.C { background: #ef4444; }
+    .bond { color: var(--muted); font-size: .75rem; letter-spacing: .05em; }
+
+    /* ── TIMELINE ── */
+    .timeline { position: relative; }
+    .timeline::before {
+      content: ''; position: absolute; left: 20px; top: 0; bottom: 0;
+      width: 2px; background: var(--border);
+    }
+    .timeline-item {
+      display: flex; gap: 1.5rem; margin-bottom: 2.5rem; position: relative;
+    }
+    .tl-dot {
+      flex-shrink: 0; width: 42px; height: 42px; border-radius: 50%;
+      background: var(--gradient); display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .85rem; color: #fff; z-index: 1;
+    }
+    .tl-body {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 1rem; padding: 1.25rem 1.5rem; flex: 1;
+    }
+    .tl-year { font-size: .75rem; color: var(--blue); font-weight: 600; margin-bottom: .25rem; }
+    .tl-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: .4rem; }
+    .tl-body p { color: var(--muted); font-size: .9rem; line-height: 1.7; }
+
+    /* ── TOOLS GRID ── */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .tool-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 1.25rem; padding: 2rem;
+      transition: border-color .3s, transform .2s;
+    }
+    .tool-card:hover { border-color: rgba(0,212,255,.35); transform: translateY(-4px); }
+    .tool-icon {
+      width: 52px; height: 52px; border-radius: .85rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin-bottom: 1.25rem;
+    }
+    .tool-icon.blue  { background: rgba(0,212,255,.12); color: var(--blue); }
+    .tool-icon.purple{ background: rgba(124,58,237,.15); color: var(--purple); }
+    .tool-icon.green { background: rgba(16,185,129,.12); color: var(--green); }
+    .tool-icon.orange{ background: rgba(245,158,11,.12); color: var(--orange); }
+    .tool-icon.red   { background: rgba(239,68,68,.12);  color: var(--red); }
+    .tool-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: .6rem; }
+    .tool-card p { color: var(--muted); font-size: .9rem; line-height: 1.7; }
+    .tool-tag {
+      display: inline-block; margin-top: 1rem;
+      background: rgba(255,255,255,.06); border: 1px solid var(--border);
+      border-radius: 999px; padding: .2rem .7rem; font-size: .75rem; color: var(--muted);
+    }
+
+    /* ── CRISPR MECHANISM ── */
+    .mechanism {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;
+    }
+    @media(max-width:768px){ .mechanism { grid-template-columns: 1fr; } }
+    .mechanism-steps { display: flex; flex-direction: column; gap: 1.25rem; }
+    .step {
+      display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .step-num {
+      flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
+      background: var(--gradient); display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .8rem; color: #fff;
+    }
+    .step-body h4 { font-size: .95rem; font-weight: 700; margin-bottom: .3rem; }
+    .step-body p { color: var(--muted); font-size: .875rem; line-height: 1.7; }
+    .crispr-visual {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 1.5rem; padding: 2rem;
+    }
+    .crispr-visual h3 { font-size: .9rem; color: var(--muted); margin-bottom: 1.5rem; text-align: center; }
+    .genome-bar {
+      display: flex; border-radius: .75rem; overflow: hidden;
+      height: 48px; margin-bottom: 1.25rem;
+    }
+    .genome-seg {
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 600; color: rgba(255,255,255,.85);
+      transition: flex .5s;
+    }
+    .genome-seg.gene-a  { flex: 3; background: rgba(0,212,255,.25); border-right: 1px solid rgba(255,255,255,.05); }
+    .genome-seg.target  { flex: 1; background: rgba(239,68,68,.4); }
+    .genome-seg.gene-b  { flex: 3; background: rgba(124,58,237,.25); border-left: 1px solid rgba(255,255,255,.05); }
+    .repair-options { display: flex; gap: 1rem; }
+    .repair-opt {
+      flex: 1; background: rgba(255,255,255,.04); border: 1px solid var(--border);
+      border-radius: .75rem; padding: 1rem; text-align: center;
+    }
+    .repair-opt .icon { font-size: 1.5rem; margin-bottom: .5rem; }
+    .repair-opt h4 { font-size: .8rem; font-weight: 700; margin-bottom: .3rem; }
+    .repair-opt p  { font-size: .72rem; color: var(--muted); line-height: 1.5; }
+
+    /* ── APPLICATIONS ── */
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+    .app-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 1.25rem; padding: 1.75rem;
+      transition: border-color .3s;
+    }
+    .app-card:hover { border-color: rgba(124,58,237,.4); }
+    .app-emoji { font-size: 2rem; margin-bottom: 1rem; }
+    .app-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: .5rem; }
+    .app-card p  { color: var(--muted); font-size: .875rem; line-height: 1.7; }
+
+    /* ── ETHICS ── */
+    .ethics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    @media(max-width:768px){ .ethics-grid { grid-template-columns: 1fr; } }
+    .ethics-col h3 {
+      font-size: 1.1rem; font-weight: 700; margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .ethics-col ul { list-style: none; display: flex; flex-direction: column; gap: .85rem; }
+    .ethics-col li {
+      display: flex; gap: .75rem; align-items: flex-start;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: .85rem; padding: 1rem 1.25rem;
+      font-size: .9rem; color: var(--muted); line-height: 1.6;
+    }
+    .ethics-col li .bullet { flex-shrink: 0; margin-top: .15rem; font-size: 1rem; }
+
+    /* ── GLOSSARY ── */
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .glossary-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 1rem; padding: 1.25rem 1.5rem;
+    }
+    .glossary-card h4 {
+      font-size: .9rem; font-weight: 700;
+      background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: .4rem;
+    }
+    .glossary-card p { font-size: .825rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none; border-top: 1px solid var(--border); margin: 0 5%;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 3rem 5%;
+      color: var(--muted); font-size: .85rem; border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--blue); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <span class="nav-logo">Genome Engineering</span>
+    <ul class="nav-links">
+      <li><a href="#what">Basics</a></li>
+      <li><a href="#history">History</a></li>
+      <li><a href="#tools">Tools</a></li>
+      <li><a href="#crispr">CRISPR</a></li>
+      <li><a href="#applications">Applications</a></li>
+      <li><a href="#ethics">Ethics</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="dna-bg">
+      <svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="#00d4ff" stroke-width="1.5" fill="none" opacity=".6">
+          <!-- Simplified DNA helix lines -->
+          <path d="M100,50 Q200,150 100,250 Q0,350 100,450 Q200,550 100,650"/>
+          <path d="M140,50 Q40,150 140,250 Q240,350 140,450 Q40,550 140,650"/>
+          <line x1="100" y1="50"  x2="140" y2="50"/>
+          <line x1="60"  y1="150" x2="200" y2="150"/>
+          <line x1="100" y1="250" x2="140" y2="250"/>
+          <line x1="60"  y1="350" x2="200" y2="350"/>
+          <line x1="100" y1="450" x2="140" y2="450"/>
+          <line x1="60"  y1="550" x2="200" y2="550"/>
+          <line x1="100" y1="650" x2="140" y2="650"/>
+        </g>
+        <g stroke="#7c3aed" stroke-width="1.5" fill="none" opacity=".5">
+          <path d="M1050,50 Q1150,150 1050,250 Q950,350 1050,450 Q1150,550 1050,650"/>
+          <path d="M1090,50 Q990,150 1090,250 Q1190,350 1090,450 Q990,550 1090,650"/>
+          <line x1="1050" y1="50"  x2="1090" y2="50"/>
+          <line x1="1010" y1="150" x2="1150" y2="150"/>
+          <line x1="1050" y1="250" x2="1090" y2="250"/>
+          <line x1="1010" y1="350" x2="1150" y2="350"/>
+          <line x1="1050" y1="450" x2="1090" y2="450"/>
+          <line x1="1010" y1="550" x2="1150" y2="550"/>
+        </g>
+      </svg>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge"><i class="fas fa-dna"></i> Molecular Biology</div>
+      <h1>
+        Understanding<br>
+        <span>Genome Engineering</span>
+      </h1>
+      <p>
+        A comprehensive guide to the science of reading, writing, and editing DNA —
+        from foundational concepts to cutting-edge tools that are transforming medicine,
+        agriculture, and our understanding of life itself.
+      </p>
+      <a href="#what" class="hero-cta">
+        <i class="fas fa-arrow-down"></i> Start Learning
+      </a>
+    </div>
+  </section>
+
+  <!-- WHAT IS GENOME ENGINEERING -->
+  <section id="what">
+    <p class="section-label">Foundations</p>
+    <h2 class="section-title">What is <span>Genome Engineering?</span></h2>
+    <p class="section-sub">
+      Genome engineering — also called genetic engineering or genome editing — is the deliberate
+      modification of an organism's genetic material using molecular biology techniques.
+    </p>
+    <div class="what-grid">
+      <div class="what-text">
+        <p>
+          Every living organism stores its blueprint in <strong>DNA (deoxyribonucleic acid)</strong>,
+          a double-stranded molecule made of four chemical bases: Adenine (A), Thymine (T),
+          Guanine (G), and Cytosine (C). These bases pair together (A–T and G–C) to form the
+          iconic double helix.
+        </p>
+        <p>
+          The complete DNA sequence of an organism — its <strong>genome</strong> — contains all the
+          instructions needed to build and operate that organism. Humans have ~3 billion base pairs
+          encoding roughly 20,000 protein-coding genes.
+        </p>
+        <p>
+          Genome engineering gives scientists the ability to <strong>add, remove, or modify</strong>
+          specific sequences within this vast instruction manual, enabling us to study gene function,
+          develop new therapies, and engineer organisms with beneficial traits.
+        </p>
+        <p>
+          Modern tools operate with extraordinary precision — targeting a specific sequence
+          among billions of base pairs, analogous to finding and editing a single word in
+          thousands of copies of a complete encyclopedia.
+        </p>
+      </div>
+      <div class="dna-diagram">
+        <h3>DNA Double Helix — Base Pairing</h3>
+        <div class="dna-strand">
+          <div class="base-pair">
+            <div class="base A">A</div>
+            <span class="bond">═══</span>
+            <div class="base T">T</div>
+          </div>
+          <div class="base-pair">
+            <div class="base T">T</div>
+            <span class="bond">═══</span>
+            <div class="base A">A</div>
+          </div>
+          <div class="base-pair">
+            <div class="base G">G</div>
+            <span class="bond">≡≡≡</span>
+            <div class="base C">C</div>
+          </div>
+          <div class="base-pair">
+            <div class="base C">C</div>
+            <span class="bond">≡≡≡</span>
+            <div class="base G">G</div>
+          </div>
+          <div class="base-pair">
+            <div class="base A">A</div>
+            <span class="bond">═══</span>
+            <div class="base T">T</div>
+          </div>
+          <div class="base-pair">
+            <div class="base G">G</div>
+            <span class="bond">≡≡≡</span>
+            <div class="base C">C</div>
+          </div>
+          <div class="base-pair">
+            <div class="base T">T</div>
+            <span class="bond">═══</span>
+            <div class="base A">A</div>
+          </div>
+          <div class="base-pair">
+            <div class="base C">C</div>
+            <span class="bond">≡≡≡</span>
+            <div class="base G">G</div>
+          </div>
+        </div>
+        <p style="font-size:.78rem;color:var(--muted);text-align:center;">
+          A–T bonds (2 hydrogen bonds) &nbsp;|&nbsp; G–C bonds (3 hydrogen bonds)
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- HISTORY TIMELINE -->
+  <section id="history">
+    <p class="section-label">History</p>
+    <h2 class="section-title">A <span>Timeline</span> of Discovery</h2>
+    <p class="section-sub">
+      Genome engineering evolved from foundational genetics research into a mature biotechnology
+      field over roughly a century of scientific breakthroughs.
+    </p>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="tl-dot">1869</div>
+        <div class="tl-body">
+          <div class="tl-year">1869</div>
+          <h3>Discovery of DNA</h3>
+          <p>Friedrich Miescher isolates "nuclein" (later named DNA) from white blood cells — the first recognition that cells contain a distinct nucleic acid molecule.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">1953</div>
+        <div class="tl-body">
+          <div class="tl-year">1953</div>
+          <h3>Double Helix Structure</h3>
+          <p>Watson, Crick, Franklin, and Wilkins elucidate the double-helix structure of DNA, immediately suggesting how genetic information is stored and copied.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">1973</div>
+        <div class="tl-body">
+          <div class="tl-year">1973</div>
+          <h3>Recombinant DNA</h3>
+          <p>Boyer and Cohen demonstrate recombinant DNA technology — cutting and joining DNA from different organisms — launching the era of modern genetic engineering.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">1982</div>
+        <div class="tl-body">
+          <div class="tl-year">1982</div>
+          <h3>First GMO Drug</h3>
+          <p>Human insulin produced in bacteria (Humulin) is approved by the FDA — the first recombinant DNA drug, replacing animal-derived insulin for diabetes treatment.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">1990</div>
+        <div class="tl-body">
+          <div class="tl-year">1990</div>
+          <h3>Human Genome Project Begins</h3>
+          <p>An international effort to sequence all 3 billion base pairs of the human genome launches — completed in 2003, providing the reference map for all future genome work.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">1996</div>
+        <div class="tl-body">
+          <div class="tl-year">1996</div>
+          <h3>Dolly the Sheep — Somatic Cell Cloning</h3>
+          <p>Dolly is cloned from an adult mammary cell at the Roslin Institute, demonstrating that differentiated cells retain the full genome and can be reprogrammed.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">2010</div>
+        <div class="tl-body">
+          <div class="tl-year">2010</div>
+          <h3>Zinc Finger Nucleases &amp; TALENs</h3>
+          <p>Engineered nucleases (ZFNs and TALENs) enable targeted double-strand DNA cuts in living cells, making site-specific editing feasible — though still technically demanding.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">2012</div>
+        <div class="tl-body">
+          <div class="tl-year">2012</div>
+          <h3>CRISPR-Cas9 as a Programmable Tool</h3>
+          <p>Doudna and Charpentier (2020 Nobel Prize) demonstrate that bacterial CRISPR-Cas9 can be reprogrammed to cut any DNA sequence, democratizing genome editing worldwide.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">2023</div>
+        <div class="tl-body">
+          <div class="tl-year">2023</div>
+          <h3>First CRISPR Therapy Approved</h3>
+          <p>Casgevy (exa-cel) becomes the first approved CRISPR-based therapy, treating sickle cell disease and beta-thalassemia — a landmark moment in translational genomic medicine.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- TOOLS -->
+  <section id="tools">
+    <p class="section-label">Molecular Tools</p>
+    <h2 class="section-title">Key <span>Editing Technologies</span></h2>
+    <p class="section-sub">
+      Scientists have developed a growing toolkit for modifying genomes, each with distinct
+      mechanisms, precision, and delivery strategies.
+    </p>
+    <div class="tools-grid">
+      <div class="tool-card">
+        <div class="tool-icon blue"><i class="fas fa-scissors"></i></div>
+        <h3>CRISPR-Cas9</h3>
+        <p>
+          Clustered Regularly Interspaced Short Palindromic Repeats paired with the Cas9 nuclease.
+          A guide RNA directs Cas9 to a specific DNA sequence, where it creates a precise
+          double-strand break. The cell's own repair machinery then introduces edits.
+        </p>
+        <span class="tool-tag">Most widely used</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon purple"><i class="fas fa-pen-nib"></i></div>
+        <h3>Base Editing</h3>
+        <p>
+          Developed by David Liu's lab, base editors fuse a deaminase enzyme to a catalytically
+          impaired Cas9. They chemically convert one DNA base to another (e.g. C→T or A→G)
+          without making double-strand breaks, reducing the risk of unintended insertions/deletions.
+        </p>
+        <span class="tool-tag">No double-strand breaks</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon green"><i class="fas fa-edit"></i></div>
+        <h3>Prime Editing</h3>
+        <p>
+          A "search-and-replace" genome editor. Prime editors use a pegRNA to both locate the
+          target and encode the desired sequence change, achieving all 12 types of point mutations
+          plus small insertions and deletions with high precision and few off-target effects.
+        </p>
+        <span class="tool-tag">Most versatile</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon orange"><i class="fas fa-wrench"></i></div>
+        <h3>TALENs</h3>
+        <p>
+          Transcription Activator-Like Effector Nucleases use customizable protein domains
+          that recognize specific DNA bases. Pairs of TALENs flank a target site and a
+          FokI nuclease creates the cut. Effective but slower to design than CRISPR.
+        </p>
+        <span class="tool-tag">Protein-based</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon red"><i class="fas fa-fingerprint"></i></div>
+        <h3>Zinc Finger Nucleases (ZFNs)</h3>
+        <p>
+          The earliest programmable nucleases. Zinc finger protein domains each recognize
+          3 bp of DNA; arrays of them can target sequences of 18+ bp with high specificity.
+          They pioneered targeted editing but require extensive protein engineering.
+        </p>
+        <span class="tool-tag">First generation</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon blue"><i class="fas fa-syringe"></i></div>
+        <h3>RNA Interference (RNAi)</h3>
+        <p>
+          Not a DNA editor, but a crucial genome-regulation tool. Small RNA molecules
+          (siRNA, shRNA) guide the RISC complex to silence complementary mRNA sequences,
+          allowing temporary knockdown of gene expression without permanent DNA changes.
+        </p>
+        <span class="tool-tag">Gene silencing</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- CRISPR MECHANISM -->
+  <section id="crispr">
+    <p class="section-label">Deep Dive</p>
+    <h2 class="section-title">How <span>CRISPR-Cas9</span> Works</h2>
+    <p class="section-sub">
+      CRISPR-Cas9 is a natural bacterial immune system that scientists have repurposed into
+      a precise genome editing tool. Here is the step-by-step mechanism.
+    </p>
+    <div class="mechanism">
+      <div class="mechanism-steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Design the Guide RNA (gRNA)</h4>
+            <p>A ~20-nucleotide sequence is designed to match the genomic target. This single guide RNA (sgRNA) directs Cas9 to the exact location in the genome.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Cas9 Scans the Genome</h4>
+            <p>The Cas9–gRNA complex binds to DNA and slides along it, searching for sequences complementary to the guide RNA adjacent to a PAM (Protospacer Adjacent Motif) sequence (NGG for SpCas9).</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Target Recognition &amp; Unwinding</h4>
+            <p>On finding the matching sequence, Cas9 unwinds the double helix and the gRNA hybridizes with the complementary strand, forming an R-loop structure.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Double-Strand DNA Cleavage</h4>
+            <p>Two nuclease domains (HNH and RuvC) each cut one strand, creating a blunt-ended double-strand break (DSB) 3 bp upstream of the PAM sequence.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Cellular DNA Repair</h4>
+            <p>The cell detects the break and repairs it via one of two pathways: NHEJ (introduces small insertions/deletions to disrupt a gene) or HDR (uses a provided template for precise edits).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="crispr-visual">
+        <h3>Genome Target &amp; Repair Outcomes</h3>
+        <div style="margin-bottom:.75rem;">
+          <p style="font-size:.78rem;color:var(--muted);margin-bottom:.5rem;">Genomic locus with target sequence (red):</p>
+          <div class="genome-bar">
+            <div class="genome-seg gene-a">Upstream DNA</div>
+            <div class="genome-seg target">TARGET</div>
+            <div class="genome-seg gene-b">Downstream DNA</div>
+          </div>
+        </div>
+        <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;">After Cas9 cuts, the cell repairs via one of two pathways:</p>
+        <div class="repair-options">
+          <div class="repair-opt">
+            <div class="icon">⚡</div>
+            <h4>NHEJ</h4>
+            <p>Non-Homologous End Joining — fast but error-prone; introduces indels that often disrupt gene function (knockout).</p>
+          </div>
+          <div class="repair-opt">
+            <div class="icon">🔬</div>
+            <h4>HDR</h4>
+            <p>Homology-Directed Repair — uses a donor template for precise edits; slower, requires dividing cells.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- APPLICATIONS -->
+  <section id="applications">
+    <p class="section-label">Real-World Impact</p>
+    <h2 class="section-title">Applications of <span>Genome Engineering</span></h2>
+    <p class="section-sub">
+      Genome editing technologies are being applied across medicine, agriculture,
+      environmental conservation, and fundamental biological research.
+    </p>
+    <div class="apps-grid">
+      <div class="app-card">
+        <div class="app-emoji">💉</div>
+        <h3>Gene Therapy</h3>
+        <p>Correcting disease-causing mutations in patients' cells. Approved therapies now exist for sickle cell disease, beta-thalassemia, and certain hereditary blindness conditions.</p>
+      </div>
+      <div class="app-card">
+        <div class="app-emoji">🦠</div>
+        <h3>Infectious Disease</h3>
+        <p>Engineering immune cells (CAR-T) to target cancer, eliminating CCR5 to block HIV entry, and developing CRISPR-based diagnostics (SHERLOCK, DETECTR) for rapid pathogen detection.</p>
+      </div>
+      <div class="app-card">
+        <div class="app-emoji">🌾</div>
+        <h3>Agriculture</h3>
+        <p>Creating disease-resistant crops, improving yield and nutritional content, reducing pesticide dependence, and developing drought-tolerant varieties to address food security challenges.</p>
+      </div>
+      <div class="app-card">
+        <div class="app-emoji">🧬</div>
+        <h3>Drug Discovery</h3>
+        <p>Genome-wide CRISPR screens identify genes essential for disease, accelerating target discovery. Organoids and animal models with precise mutations enable better preclinical testing.</p>
+      </div>
+      <div class="app-card">
+        <div class="app-emoji">🐄</div>
+        <h3>Animal Biotechnology</h3>
+        <p>Engineering livestock for disease resistance, producing therapeutic proteins, and developing pigs with humanized organs for potential xenotransplantation into human patients.</p>
+      </div>
+      <div class="app-card">
+        <div class="app-emoji">🦟</div>
+        <h3>Gene Drives</h3>
+        <p>Self-propagating genetic elements designed to spread through wild populations — explored for controlling malaria-transmitting mosquitoes and invasive species, with careful ecological consideration.</p>
+      </div>
+      <div class="app-card">
+        <div class="app-emoji">🔬</div>
+        <h3>Basic Research</h3>
+        <p>Understanding gene function by creating precise knockouts and knock-ins. Mapping regulatory elements, studying developmental biology, and building faithful disease models in cells and animals.</p>
+      </div>
+      <div class="app-card">
+        <div class="app-emoji">🌿</div>
+        <h3>Conservation</h3>
+        <p>Exploring genetic rescue of endangered species, restoring functional traits lost to extinction (woolly mammoth de-extinction efforts), and engineering disease resistance in threatened wildlife.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ETHICS -->
+  <section id="ethics">
+    <p class="section-label">Society &amp; Responsibility</p>
+    <h2 class="section-title">Ethical <span>Considerations</span></h2>
+    <p class="section-sub">
+      The power to rewrite DNA raises profound questions about safety, equity, consent, and
+      the boundaries of what science should pursue. Open public discourse is essential.
+    </p>
+    <div class="ethics-grid">
+      <div class="ethics-col">
+        <h3><span style="color:var(--green)">✓</span> Potential Benefits</h3>
+        <ul>
+          <li><span class="bullet">🩺</span> Curing inherited genetic diseases that currently have no treatment, offering hope to millions of patients worldwide.</li>
+          <li><span class="bullet">🌱</span> Engineering more resilient crops to feed a growing global population under climate change pressures.</li>
+          <li><span class="bullet">💊</span> Accelerating drug discovery and development, reducing timelines and costs for new therapies.</li>
+          <li><span class="bullet">🔬</span> Deepening our fundamental understanding of biology, gene regulation, and human development.</li>
+          <li><span class="bullet">🌍</span> Novel conservation tools to protect biodiversity and rescue species facing extinction.</li>
+        </ul>
+      </div>
+      <div class="ethics-col">
+        <h3><span style="color:var(--red)">⚠</span> Concerns &amp; Risks</h3>
+        <ul>
+          <li><span class="bullet">🧬</span> <strong>Germline editing</strong> — changes to embryos are heritable, affecting all future generations without consent, raising profound ethical concerns.</li>
+          <li><span class="bullet">⚖️</span> <strong>Equity</strong> — expensive therapies risk creating genetic "haves and have-nots," exacerbating existing health disparities globally.</li>
+          <li><span class="bullet">🎯</span> <strong>Off-target effects</strong> — edits at unintended genomic locations could have unknown, potentially harmful consequences.</li>
+          <li><span class="bullet">🌿</span> <strong>Ecological risk</strong> — releasing edited organisms or gene drives could have unpredictable, irreversible ecosystem impacts.</li>
+          <li><span class="bullet">🧪</span> <strong>Enhancement</strong> — potential misuse for non-therapeutic genetic enhancement raises questions about human identity and social equality.</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top:2rem;padding:1.5rem;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);border-radius:1.25rem;">
+      <p style="color:var(--muted);line-height:1.8;font-size:.95rem;">
+        <strong style="color:var(--blue)">International Governance:</strong>
+        Following the 2018 controversy over the first CRISPR-edited babies, major scientific
+        bodies including the WHO, National Academies, and Royal Society have called for
+        an international framework governing heritable human genome editing. There is broad
+        scientific consensus that clinical germline editing is not yet appropriate given
+        current safety limitations and insufficient ethical deliberation.
+      </p>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- GLOSSARY -->
+  <section id="glossary">
+    <p class="section-label">Reference</p>
+    <h2 class="section-title">Key <span>Terminology</span></h2>
+    <p class="section-sub">Essential terms for understanding genome engineering literature and research.</p>
+    <div class="glossary-grid">
+      <div class="glossary-card">
+        <h4>Genome</h4>
+        <p>The complete set of DNA in an organism, including all genes and non-coding sequences. Humans have ~3 billion base pairs.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>Gene</h4>
+        <p>A segment of DNA that encodes a functional product, typically a protein. Humans have ~20,000 protein-coding genes.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>Nucleotide</h4>
+        <p>The monomer unit of DNA/RNA, consisting of a sugar, phosphate group, and one of four nitrogenous bases (A, T, G, C).</p>
+      </div>
+      <div class="glossary-card">
+        <h4>Cas9</h4>
+        <p>CRISPR-Associated Protein 9. An RNA-guided DNA endonuclease that creates double-strand breaks at targeted locations.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>gRNA / sgRNA</h4>
+        <p>Guide RNA / Single Guide RNA. Directs Cas9 to a specific DNA sequence complementary to its ~20 nt spacer region.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>PAM Sequence</h4>
+        <p>Protospacer Adjacent Motif. A short DNA sequence (e.g. NGG) required next to the target site for Cas9 recognition.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>Indel</h4>
+        <p>Insertion or deletion of nucleotides. Indels caused by NHEJ repair often disrupt the reading frame, knocking out a gene.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>Knockin / Knockout</h4>
+        <p>Knockout = gene disrupted or removed. Knockin = specific sequence inserted at a defined locus using HDR.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>Off-target Effect</h4>
+        <p>Unintended edits at genomic sites similar to the target sequence; a key safety concern being addressed by improved Cas9 variants.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>Germline Editing</h4>
+        <p>Editing in reproductive cells (sperm, eggs) or embryos; changes are heritable and passed to all future generations.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>Somatic Editing</h4>
+        <p>Editing in non-reproductive body cells; changes affect only the treated individual and are not inherited.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>Epigenome</h4>
+        <p>Chemical modifications to DNA and histones that regulate gene expression without changing the underlying sequence. Also editable.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>
+      Genome Engineering — An Educational Overview &nbsp;|&nbsp;
+      <a href="index.html">Back to Portfolio</a>
+    </p>
+    <p style="margin-top:.5rem;font-size:.78rem;">
+      Content for educational purposes. Science is rapidly evolving — consult primary literature for the latest findings.
+    </p>
+  </footer>
+
+</body>
+</html>
